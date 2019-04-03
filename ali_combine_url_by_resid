@@ -1,0 +1,22 @@
+// GetURLFromAliOSSAlbum  根据影集id获取影集的url
+func GetURLFromAliOSSAlbum(id int64) (url string, err error) {
+	client, err := oss.New(
+		AliossVideoendpoint,
+		Aliossimgaccesskeyid,
+		Aliossimgsecretkey,
+	)
+	if err != nil {
+		return
+	}
+	bucket, err := client.Bucket(photobucketname)
+	if err != nil {
+		return
+	}
+	url, err = bucket.SignURL(strconv.FormatInt(id, 10), oss.HTTPGet, 86400*1000)
+	if err != nil {
+		return
+	}
+	//url = strings.Replace(url, "oss-cn-shenzhen-internal.aliyuncs.com", "oss-cn-shenzhen.aliyuncs.com", 1)
+	url = strings.Replace(url, "xphoto-ali", "cdn-xphoto2", 1)
+	return
+}
